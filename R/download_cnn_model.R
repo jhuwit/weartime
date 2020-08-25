@@ -2,15 +2,17 @@
 #'
 #' @param episode_window_sec define window length to create input features for the CNN model
 #' @param outdir output directory for `h5` file
+#' @param verbose print diagnostic messages
 #'
 #' @return A path to the `h5` file
 #' @export
 #'
 #' @examples
-#' download_cnn_model()
+#' download_cnn_model(outdir = tempdir())
 download_cnn_model = function(
   episode_window_sec = 7,
-  outdir = NULL) {
+  outdir = NULL,
+  verbose = TRUE) {
   stopifnot(episode_window_sec %in% 2:10)
   episode_window_sec = episode_window_sec[1]
   url = "https://github.com/shaheen-syed/CNN-Non-Wear-Time-Algorithm/"
@@ -20,6 +22,6 @@ download_cnn_model = function(
     outdir = system.file("extdata", package = "weartime")
   }
   destfile = file.path(outdir, basename(path))
-  curl::curl_download(url = url, destfile = destfile)
+  curl::curl_download(url = url, destfile = destfile, quiet = !verbose)
   return(destfile)
 }

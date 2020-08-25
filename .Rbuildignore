@@ -1,7 +1,8 @@
-^pygt3x\.Rproj$
+^weartime\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^appveyor\.yml$
 ^README\.Rmd$
 ^\.travis\.yml$
 ^inst/gt3x/\.git$
+^requirements\.txt$

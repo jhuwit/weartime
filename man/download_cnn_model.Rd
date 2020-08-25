@@ -4,12 +4,14 @@
 \alias{download_cnn_model}
 \title{Download CNN for Wear Time Estimation}
 \usage{
-download_cnn_model(episode_window_sec = 7, outdir = NULL)
+download_cnn_model(episode_window_sec = 7, outdir = NULL, verbose = TRUE)
 }
 \arguments{
 \item{episode_window_sec}{define window length to create input features for the CNN model}
 
 \item{outdir}{output directory for \code{h5} file}
+
+\item{verbose}{print diagnostic messages}
 }
 \value{
 A path to the \code{h5} file
@@ -18,5 +20,5 @@ A path to the \code{h5} file
 Download CNN for Wear Time Estimation
 }
 \examples{
-download_cnn_model()
+download_cnn_model(outdir = tempdir())
 }

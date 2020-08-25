@@ -26,6 +26,7 @@
 #'   as non-wear time by default.
 #' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
 #' and then imputed
+#' @param sample_rate sample rate (integer) of the Hertz from the header
 #' @param verbose print diagnostic messages
 #' @param std_threshold standard deviation threshold in g
 #' @param distance_in_min merge distance to group two nearby candidate nonwear episodes
@@ -53,19 +54,15 @@
 #' gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 #' path = gt3x_file
 #'
-#' res = py_read_gt3x(path)
-#' df = impute_zeros(res$data, res$dates, res$header)
-#' res = pygt3x::py_read_gt3x(path, verbose = verbose)
-#' sample_rate = as.integer(res$header$Sample_Rate)
-#' res = pygt3x::impute_zeros(
-#'   res$data, res$dates,
-#'   res$header)
+#' res = pygt3x::py_read_gt3x(path)
+#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' out = wt_cnn(df, outdir = tempdir())
 #'
 #' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 #' package = "pygt3x")
 #' res = pygt3x::py_read_gt3x(path)
-#' sample_rate = as.integer(res$header$Sample_Rate)
-#' out = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' out = wt_cnn(df, outdir = tempdir())
 wt_cnn = function(
   accdata,
   sample_rate = NULL,
@@ -96,7 +93,7 @@ wt_cnn = function(
     if (length(tdiff) != 1) {
       stop(msg)
     }
-    sample_rate = tdiff
+    sample_rate = round(tdiff)
     verbose_message(
       paste0("sample_rate estimated to be ",
              sample_rate, ". If not correct, ", msg),
@@ -113,7 +110,8 @@ wt_cnn = function(
 
   cnn_model_file = download_cnn_model(
     episode_window_sec = episode_window_sec,
-    outdir = outdir)
+    outdir = outdir,
+    verbose = verbose > 1)
 
   import_path = system.file(
     "extdata", "cnn",
@@ -142,6 +140,6 @@ wt_cnn = function(
   names(out) = c("nw_vector", "nw_data")
   stopifnot(ncol(out$nw_vector) ==1)
   out$nw_vector = c(out$nw_vector)
-  stopifnot(length(out$nw_vector) == nrow(actigraph_acc))
-  return(out)
+  stopifnot(length(out$nw_vector) == nrow(accdata))
+  return(out$nw_vector)
 }

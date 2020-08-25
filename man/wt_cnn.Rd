@@ -22,6 +22,8 @@ wt_cnn(
 \item{accdata}{activity data, usually output from \code{\link{py_read_gt3x}},
 and then imputed}
 
+\item{sample_rate}{sample rate (integer) of the Hertz from the header}
+
 \item{std_threshold}{standard deviation threshold in g}
 
 \item{distance_in_min}{merge distance to group two nearby candidate nonwear episodes}
@@ -86,17 +88,13 @@ gt3x_file = unzip(destfile, exdir = tempdir())
 gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 
-res = py_read_gt3x(path)
-df = impute_zeros(res$data, res$dates, res$header)
-res = pygt3x::py_read_gt3x(path, verbose = verbose)
-sample_rate = as.integer(res$header$Sample_Rate)
-res = pygt3x::impute_zeros(
-  res$data, res$dates,
-  res$header)
+res = pygt3x::py_read_gt3x(path)
+df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+out = wt_cnn(df, outdir = tempdir())
 
 path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 package = "pygt3x")
 res = pygt3x::py_read_gt3x(path)
-sample_rate = as.integer(res$header$Sample_Rate)
-out = pygt3x::impute_zeros(res$data, res$dates, res$header)
+df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+out = wt_cnn(df, outdir = tempdir())
 }
