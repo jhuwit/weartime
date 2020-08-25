@@ -30,3 +30,5 @@ Imports:
     curl
 Suggests: 
     testthat
+URL: https://github.com/muschellij2/weartime
+BugReports: https://github.com/muschellij2/weartime/issues
