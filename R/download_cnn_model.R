@@ -22,6 +22,12 @@ download_cnn_model = function(
     outdir = system.file("extdata", package = "weartime")
   }
   destfile = file.path(outdir, basename(path))
-  curl::curl_download(url = url, destfile = destfile, quiet = !verbose)
+  if (!file.exists(destfile)) {
+    curl::curl_download(url = url, destfile = destfile, quiet = !verbose)
+  } else {
+    if (verbose) {
+      message("Model already downloaded, remove if want to re-download")
+    }
+  }
   return(destfile)
 }

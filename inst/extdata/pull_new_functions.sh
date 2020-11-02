@@ -4,4 +4,5 @@ rm -rf cnn
 mkdir -p cnn
 mkdir -p cnn/functions/
 cp CNN-Non-Wear-Time-Algorithm/functions/*.py cnn/functions
+rm -f cnn/functions/gt3x_functions.py
 rm -rf CNN-Non-Wear-Time-Algorithm

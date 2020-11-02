@@ -81,6 +81,15 @@ those candidate non-wear episodes do not have a preceding or following window to
 as non-wear time by default.
 }
 \examples{
+
+path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+package = "pygt3x")
+res = pygt3x::py_read_gt3x(path)
+df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+out = wt_cnn(df, outdir = tempdir())
+
+\dontrun{
+
 url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X\%2B.01.day.gt3x.zip"
 destfile = tempfile(fileext = ".zip")
 dl = download.file(url, destfile = destfile)
@@ -92,9 +101,16 @@ res = pygt3x::py_read_gt3x(path)
 df = pygt3x::impute_zeros(res$data, res$dates, res$header)
 out = wt_cnn(df, outdir = tempdir())
 
-path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-package = "pygt3x")
+path = file.path(tempdir(), "AI12_NEO1F09120034_2017-09-25.gt3x.gz")
+if (!file.exists(path)) {
+  curl::curl_download(
+    "https://ndownloader.figshare.com/files/21855675",
+    destfile = path,
+    quiet = FALSE)
+}
 res = pygt3x::py_read_gt3x(path)
 df = pygt3x::impute_zeros(res$data, res$dates, res$header)
 out = wt_cnn(df, outdir = tempdir())
+}
+
 }

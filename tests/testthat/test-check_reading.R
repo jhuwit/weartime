@@ -1,59 +1,29 @@
-path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-                   package = "pygt3x")
-
-testthat::test_that("read.gt3x and py_read_gt3x agree", {
-  rg = read.gt3x::read.gt3x(path, verbose = FALSE,
-                            debug = FALSE, asDataFrame = TRUE)
-  rg = rg[, c("X", "Y", "Z")]
-  class(rg) = "data.frame"
-
-
-  res = py_read_gt3x(path, verbose = FALSE)
-  test = res$data
-  zero = rowSums(test[, c("X", "Y", "Z")] == 0) == 3
-  stopifnot(!any(zero))
-  testthat::expect_true(max(abs(as.matrix(rg) - as.matrix(test))) == 0)
-
+path = file.path(tempdir(), "AI12_NEO1F09120034_2017-09-25.gt3x.gz")
+if (!file.exists(path)) {
+  curl::curl_download(
+    "https://ndownloader.figshare.com/files/21855675",
+    destfile = path,
+    quiet = FALSE)
+}
+testthat::test_that("Downloading CNN Model", {
+  x = download_cnn_model(outdir = tempdir())
+  testthat::expect_true(file.exists(x))
 })
 
 
+testthat::test_that("No index given", {
+  res = pygt3x::py_read_gt3x(path)
+  df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+  testthat::expect_equal(nrow(df), 18144000L)
+  dtime = structure(c(1506333600, 1506938399.9666666),
+                    class = c("POSIXct",
+                              "POSIXt"),
+                    tzone = "GMT")
+  testthat::expect_equal(range(df$time), dtime, tolerance = 1e-5)
+  out = wt_cnn(df, outdir = tempdir())
 
-testthat::test_that("imputing zeros read.gt3x and py_read_gt3x agree", {
-  rg = read.gt3x::read.gt3x(path, verbose = FALSE,
-                            imputeZeroes = TRUE,
-                            debug = FALSE, asDataFrame = TRUE)
-  rg = rg[, c("X", "Y", "Z", "time")]
-  class(rg) = "data.frame"
-
-
-  res = py_read_gt3x(path, verbose = FALSE)
-  res = impute_zeros(res$data, res$dates, res$header)
-
-  out = dplyr::inner_join(res, rg, by = "time", suffix = c("_py", "_rg"))
-  testthat::expect_true(all(out$X_py == out$X_rg))
-  testthat::expect_true(all(out$Y_py == out$Y_rg))
-  testthat::expect_true(all(out$Z_py == out$Z_rg))
-
-  out = dplyr::anti_join(rg, res, by = "time")
-  testthat::expect_true(all(out$X == 0))
-  testthat::expect_true(all(out$Y == 0))
-  testthat::expect_true(all(out$Z == 0))
-
-  range_dates = range(res$time)
-  range_aj = range(out$time)
-  # test that all the non-joined values are outside of the data
-  # aka nothing in the "middle"
-  testthat::expect_false(
-    any(dplyr::between(range_aj, range_dates[1], range_dates[2]))
-    )
-
-
-  out = dplyr::anti_join(res, rg, by = "time")
-  testthat::expect_true(nrow(out) == 0)
-
-
+  testthat::expect_equal(sum(out), 53279758L)
+  testthat::expect_equal(sum(!out), 7200242L)
 })
-
-
 
 
