@@ -295,7 +295,7 @@ def group_episodes(episodes, distance_in_min = 3, correction = 3, hz = 100, trai
 
 
 
-def cnn_nw_algorithm(raw_acc, hz, cnn_model_file, std_threshold = 0.004, distance_in_min = 5, episode_window_sec = 7, edge_true_or_false = True,\
+def cnn_nw_algorithm(raw_acc, hz, cnn_model_file, std_threshold = 0.004, distance_in_min = 5, episode_window_sec = 7, edge_true_or_false = True,
 								start_stop_label_decision = 'and', nwt_encoding = 1, wt_encoding = 0,
 								min_segment_length = 1, sliding_window = 1, verbose = False):
 	"""

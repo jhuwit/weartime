@@ -117,6 +117,7 @@ wt_cnn = function(
              sample_rate, ". If not correct, ", msg),
       verbose = verbose)
   }
+  times = accdata$time
   accdata$time = NULL
   accdata = as.matrix(accdata)
   accdata = reticulate::np_array(accdata)
@@ -158,6 +159,67 @@ wt_cnn = function(
   names(out) = c("nw_vector", "nw_data")
   stopifnot(ncol(out$nw_vector) ==1)
   out$nw_vector = c(out$nw_vector)
+  times_100 = seq(times[1],
+                  lubridate::ceiling_date(times[length(times)], "1 second"),
+                  by = lubridate::as.period(1/100, unit = "second"))
+  times_100 = times_100[seq(length(out$nw_vector))]
   stopifnot(length(out$nw_vector) == nrow(accdata))
-  return(out$nw_vector)
+  out = tibble::tibble(time = times_100, wear = out$nw_vector > 0)
+  return(out)
+}
+
+resample_acc = function(
+  accdata,
+  sample_rate = NULL,
+  to_hz = 100L,
+  verbose = TRUE,
+  outdir = NULL
+) {
+
+  check_py_packages()
+  verbose_message <- function(..., verbose = verbose) {
+    if (verbose) {
+      message(...)
+    }
+  }
+
+  if (is.null(sample_rate)) {
+    msg = "sample_rate must be specified!"
+    if (is.null(accdata$time)) {
+      stop(msg)
+    }
+    tdiff = as.numeric(diff(accdata$time))
+    tdiff = round(tdiff, 4)
+    tdiff = 1/unique(tdiff)
+    if (length(tdiff) != 1) {
+      stop(msg)
+    }
+    sample_rate = round(tdiff)
+    verbose_message(
+      paste0("sample_rate estimated to be ",
+             sample_rate, ". If not correct, ", msg),
+      verbose = verbose)
+  }
+  accdata$time = NULL
+  times = accdata$time
+  accdata = as.matrix(accdata)
+  accdata = reticulate::np_array(accdata)
+
+  stopifnot(!is.null(sample_rate))
+
+  import_path = system.file(
+    "extdata", "cnn",
+    package = "weartime")
+  wear = reticulate::import_from_path(
+    "functions", path =  import_path,
+    convert = TRUE)
+
+
+  out = wear$signal_processing_functions$resample_acceleration(
+    data = accdata,
+    from_hz = as.integer(sample_rate),
+    to_hz = as.integer(to_hz),
+    verbose = verbose)
+  return(out)
+
 }

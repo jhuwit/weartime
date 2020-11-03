@@ -6,6 +6,7 @@ import logging
 import resampy # to resample frequency
 import numpy as np
 from scipy import signal
+import math
 try:
     from multiprocessing import cpu_count
 except ImportError:
@@ -103,10 +104,11 @@ def resample_acceleration(data, from_hz, to_hz, use_parallel = False, num_jobs =
 	logging.info('Start {}'.format(sys._getframe().f_code.co_name))
 
 	# calculate number of 1 sec samples (note that hz is the frequency per second)
-	num_seconds = len(data) // from_hz
+	# num_seconds = len(data) // from_hz
+	num_seconds = len(data)/from_hz
 
 	# calculate number of new samples required when data is resampled
-	num_samples = num_seconds * to_hz
+	num_samples = int(num_seconds * to_hz)
 
 	# get number of axes in the data. These are the columns of the array (so if we have xyz then this is 3)
 	axes = data.shape[1]
