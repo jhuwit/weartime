@@ -1,4 +1,4 @@
 library(testthat)
-library(pygt3x)
+library(weartime)
 
-test_check("pygt3x")
+test_check("weartime")

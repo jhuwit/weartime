@@ -158,22 +158,44 @@ wt_cnn = function(
 
   names(out) = c("nw_vector", "nw_data")
   stopifnot(ncol(out$nw_vector) ==1)
-  out$nw_vector = c(out$nw_vector)
-  times_100 = seq(times[1],
-                  lubridate::ceiling_date(times[length(times)], "1 second"),
-                  by = lubridate::as.period(1/100, unit = "second"))
-  times_100 = times_100[seq(length(out$nw_vector))]
   stopifnot(length(out$nw_vector) == nrow(accdata))
-  out = tibble::tibble(time = times_100, wear = out$nw_vector > 0)
+
+  out$nw_vector = c(out$nw_vector)
+  if (!is.null(times)) {
+    times_100 = seq(times[1],
+                    lubridate::ceiling_date(times[length(times)], "1 second"),
+                    by = lubridate::as.period(1/100, unit = "second"))
+    times_100 = times_100[seq(length(out$nw_vector))]
+    out = tibble::tibble(time = times_100, wear = out$nw_vector > 0)
+  } else {
+    out = tibble::tibble(wear = out$nw_vector > 0)
+  }
   return(out)
 }
 
+#' Resample Accelerometer Data
+#'
+#' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
+#' and then imputed
+#' @param sample_rate sample rate (integer) of the Hertz from the header
+#' @param to_hz sample rate (integer) to resample to
+#' @param verbose print diagnostic messages
+#'
+#' @return A \code{tibble} of resampled data
+#' @export
+#'
+#' @examples
+#'
+#' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+#' package = "pygt3x")
+#' res = pygt3x::py_read_gt3x(path)
+#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' res = resample_acc(df)
 resample_acc = function(
   accdata,
   sample_rate = NULL,
   to_hz = 100L,
-  verbose = TRUE,
-  outdir = NULL
+  verbose = TRUE
 ) {
 
   check_py_packages()
@@ -200,8 +222,9 @@ resample_acc = function(
              sample_rate, ". If not correct, ", msg),
       verbose = verbose)
   }
-  accdata$time = NULL
   times = accdata$time
+  accdata$time = NULL
+  cn = colnames(accdata)
   accdata = as.matrix(accdata)
   accdata = reticulate::np_array(accdata)
 
@@ -220,6 +243,16 @@ resample_acc = function(
     from_hz = as.integer(sample_rate),
     to_hz = as.integer(to_hz),
     verbose = verbose)
-  return(out)
+  colnames(out) = cn
+  out = tibble::as_tibble(out)
 
+  if (!is.null(times)) {
+    times_100 = seq(times[1],
+                    lubridate::ceiling_date(times[length(times)], "1 second"),
+                    by = lubridate::as.period(1/100, unit = "second"))
+    times_100 = times_100[seq(nrow(out))]
+    out$time = times_100
+    out = out[, c("time", cn)]
+  }
+  return(out)
 }
