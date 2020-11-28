@@ -67,7 +67,7 @@ res = pygt3x::py_read_gt3x(path)
 df = pygt3x::impute_zeros(res$data, res$dates, res$header)
 out = wt_hees_2013(df)
 
-#' \dontrun{
+\dontrun{
 
 url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X\%2B.01.day.gt3x.zip"
 destfile = tempfile(fileext = ".zip")
