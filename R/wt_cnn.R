@@ -26,7 +26,7 @@
 #'   as non-wear time by default.
 #' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
 #' and then imputed
-#' @param sample_rate sample rate (integer) of the Hertz from the header
+#' @param sample_rate sample rate (integer) of the sampling frequency in Hertz from the header
 #' @param verbose print diagnostic messages
 #' @param std_threshold standard deviation threshold in g
 #' @param distance_in_min merge distance to group two nearby candidate nonwear episodes
@@ -94,29 +94,13 @@ wt_cnn = function(
 ) {
 
   check_py_packages()
-  verbose_message <- function(..., verbose = verbose) {
+  verbose_message <- function(..., verbose = TRUE) {
     if (verbose) {
       message(...)
     }
   }
 
-  if (is.null(sample_rate)) {
-    msg = "sample_rate must be specified!"
-    if (is.null(accdata$time)) {
-      stop(msg)
-    }
-    tdiff = as.numeric(diff(accdata$time))
-    tdiff = round(tdiff, 4)
-    tdiff = 1/unique(tdiff)
-    if (length(tdiff) != 1) {
-      stop(msg)
-    }
-    sample_rate = round(tdiff)
-    verbose_message(
-      paste0("sample_rate estimated to be ",
-             sample_rate, ". If not correct, ", msg),
-      verbose = verbose)
-  }
+  sample_rate = get_sample_rate(accdata, sample_rate, verbose)
   times = accdata$time
   accdata$time = NULL
   accdata = as.matrix(accdata)
@@ -205,30 +189,15 @@ resample_acc = function(
     }
   }
 
-  if (is.null(sample_rate)) {
-    msg = "sample_rate must be specified!"
-    if (is.null(accdata$time)) {
-      stop(msg)
-    }
-    tdiff = as.numeric(diff(accdata$time))
-    tdiff = round(tdiff, 4)
-    tdiff = 1/unique(tdiff)
-    if (length(tdiff) != 1) {
-      stop(msg)
-    }
-    sample_rate = round(tdiff)
-    verbose_message(
-      paste0("sample_rate estimated to be ",
-             sample_rate, ". If not correct, ", msg),
-      verbose = verbose)
-  }
+  sample_rate = get_sample_rate(accdata = accdata, sample_rate, verbose)
+  stopifnot(!is.null(sample_rate))
+
   times = accdata$time
   accdata$time = NULL
   cn = colnames(accdata)
   accdata = as.matrix(accdata)
   accdata = reticulate::np_array(accdata)
 
-  stopifnot(!is.null(sample_rate))
 
   import_path = system.file(
     "extdata", "cnn",

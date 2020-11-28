@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/muschellij2/weartime.svg?branch=master)](https://travis-ci.com/muschellij2/weartime)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/muschellij2/weartime?branch=master&svg=true)](https://ci.appveyor.com/project/muschellij2/weartime)
+[![R build status](https://github.com/muschellij2/weartime/workflows/R-CMD-check/badge.svg)](https://github.com/muschellij2/weartime/actions)
 <!-- badges: end -->
 
 The goal of weartime is to ...

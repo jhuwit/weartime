@@ -22,7 +22,7 @@ wt_cnn(
 \item{accdata}{activity data, usually output from \code{\link{py_read_gt3x}},
 and then imputed}
 
-\item{sample_rate}{sample rate (integer) of the Hertz from the header}
+\item{sample_rate}{sample rate (integer) of the sampling frequency in Hertz from the header}
 
 \item{std_threshold}{standard deviation threshold in g}
 

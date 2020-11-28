@@ -6,3 +6,4 @@
 ^\.travis\.yml$
 ^inst/gt3x/\.git$
 ^requirements\.txt$
+^\.github$
