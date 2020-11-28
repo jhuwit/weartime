@@ -7,5 +7,3 @@ tensorflow
 bitstring
 scipy
 resampy
-time
-datetime
