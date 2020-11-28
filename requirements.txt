@@ -7,7 +7,5 @@ tensorflow
 bitstring
 scipy
 resampy
-csv
-logging
 time
 datetime
