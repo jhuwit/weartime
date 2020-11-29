@@ -96,12 +96,15 @@ wt_cnn = function(
   check_py_packages()
 
   sample_rate = get_sample_rate(accdata, sample_rate, verbose)
+  stopifnot(!is.null(sample_rate))
   times = accdata$time
   accdata$time = NULL
+  if (verbose) {
+    message("Converting to Numpy Array")
+  }
+
   accdata = as.matrix(accdata)
   accdata = reticulate::np_array(accdata)
-
-  stopifnot(!is.null(sample_rate))
 
   start_stop_label_decision = match.arg(
     start_stop_label_decision)
@@ -118,6 +121,9 @@ wt_cnn = function(
     "functions", path =  import_path,
     convert = TRUE)
 
+  if (verbose) {
+    message("Running Model")
+  }
 
   out = wear$raw_non_wear_functions$cnn_nw_algorithm(
     raw_acc = accdata,
@@ -135,10 +141,15 @@ wt_cnn = function(
     verbose = as.logical(verbose)
   )
 
+  if (verbose) {
+    message("Creating Output")
+  }
+
   names(out) = c("nw_vector", "nw_data")
   stopifnot(ncol(out$nw_vector) ==1)
   stopifnot(length(out$nw_vector) == nrow(accdata))
 
+  rm(accdata);
   out$nw_vector = c(out$nw_vector)
   if (!is.null(times)) {
     times_100 = seq(times[1],
@@ -190,6 +201,9 @@ resample_acc = function(
   at = attributes(accdata)
   times = accdata$time
   accdata$time = NULL
+  if (verbose) {
+    message("Converting to Numpy Array")
+  }
   cn = colnames(accdata)
   accdata = as.matrix(accdata)
   accdata = reticulate::np_array(accdata)
@@ -207,8 +221,13 @@ resample_acc = function(
     from_hz = as.integer(sample_rate),
     to_hz = as.integer(to_hz),
     verbose = verbose)
+
+  if (verbose) {
+    message("Creating Output")
+  }
   colnames(out) = cn
   out = tibble::as_tibble(out)
+  rm(accdata)
 
   if (!is.null(times)) {
     times_100 = seq(times[1],
