@@ -38,9 +38,9 @@
 #' sides need to be classified as non-wear time (AND) or just a single side (OR)
 #' @param outdir output directory to download the CNN model, passed to
 #' \code{\link{download_cnn_model}}
-#' @param min_segment_length minimum length of the segment to be candidate for
+#' @param min_segment_length minimum length of the segment (in minutes) to be candidate for
 #' non-wear time, coerced to integer
-#' @param sliding_window  sliding window in minutes that will go over
+#' @param sliding_window  sliding window (in minutes) that will go over
 #' the acceleration data to find candidate non-wear segments, coerced to integer
 #'
 #' @return A list of data
@@ -94,11 +94,6 @@ wt_cnn = function(
 ) {
 
   check_py_packages()
-  verbose_message <- function(..., verbose = TRUE) {
-    if (verbose) {
-      message(...)
-    }
-  }
 
   sample_rate = get_sample_rate(accdata, sample_rate, verbose)
   times = accdata$time
@@ -183,15 +178,16 @@ resample_acc = function(
 ) {
 
   check_py_packages()
-  verbose_message <- function(..., verbose = verbose) {
-    if (verbose) {
-      message(...)
-    }
-  }
+
 
   sample_rate = get_sample_rate(accdata = accdata, sample_rate, verbose)
   stopifnot(!is.null(sample_rate))
+  if (sample_rate == to_hz) {
+    warning("Sample rate is identical to to_hz")
+  }
 
+
+  at = attributes(accdata)
   times = accdata$time
   accdata$time = NULL
   cn = colnames(accdata)
@@ -205,7 +201,6 @@ resample_acc = function(
   wear = reticulate::import_from_path(
     "functions", path =  import_path,
     convert = TRUE)
-
 
   out = wear$signal_processing_functions$resample_acceleration(
     data = accdata,
@@ -223,5 +218,11 @@ resample_acc = function(
     out$time = times_100
     out = out[, c("time", cn)]
   }
+  at_names = setdiff(names(at), names(attributes(out)))
+  at$sample_rate = to_hz
+  for (iattr in at_names) {
+    attr(out, iattr) = at[[iattr]]
+  }
+
   return(out)
 }

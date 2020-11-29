@@ -6,9 +6,9 @@
 #' @param verbose print diagnostic messages
 #' @param min_non_wear_time_window int (optional) minimum window length in minutes to be classified as non-wear time
 #' @param window_overlap int (optional) basically the sliding window that progresses over the acceleration data. Defaults to 15 minutes.
-#' @param std_threshold float (optional) standard deviation threshold in mg. Acceleration axes values below or equal this threshold can be considered non-wear time. Defaults to 3.0mg. Note that within the code we convert mg to g.
+#' @param std_threshold float (optional) standard deviation threshold in g. Acceleration axes values below or equal this threshold can be considered non-wear time. Defaults to 3.0mg.
 #' @param std_min_num_axes int (optional)  minimum number of axes used to check if acceleration values are below the `std_threshold` value. Defaults to 2 axes; meaning that at least 2  axes need to have values below a threshold value to be considered non wear time
-#' @param value_range_mg_threshold float (optional) value range threshold value in mg. If the range of values within a window is below this threshold (meaning that there is very little change in acceleration over time) then this can be considered non wear time. Default to 50 mg. Note that within the code we convert mg to g
+#' @param value_range_threshold float (optional) value range threshold value in g. If the range of values within a window is below this threshold (meaning that there is very little change in acceleration over time) then this can be considered non wear time. Default to 50 mg.
 #' @param value_range_min_num_axes int (optional) minimum number of axes used to check if acceleration values range are below the value_range_mg_threshold value. Defaults to 2 axes; meaning that at least 2 axes need to have a value range below a threshold value to be considered non wear time
 #'
 #' @return A tibble of time and indicator of wear
@@ -41,18 +41,13 @@ wt_hees_2013 =  function(
   sample_rate = NULL,
   min_non_wear_time_window = 60L,
   window_overlap = 15L,
-  std_threshold = 3.0,
+  std_threshold = 0.003,
   std_min_num_axes = 2L,
-  value_range_mg_threshold = 50.0,
+  value_range_threshold = 0.050,
   value_range_min_num_axes = 2L,
   verbose = TRUE) {
 
   check_py_packages()
-  verbose_message <- function(..., verbose = TRUE) {
-    if (verbose) {
-      message(...)
-    }
-  }
 
   sample_rate = get_sample_rate(accdata, sample_rate, verbose)
   times = accdata$time
@@ -74,7 +69,9 @@ wt_hees_2013 =  function(
   value_range_min_num_axes = as.integer(value_range_min_num_axes)
   std_min_num_axes = as.integer(std_min_num_axes)
   std_threshold = as.numeric(std_threshold)
-  value_range_mg_threshold = as.numeric(value_range_mg_threshold)
+  value_range_threshold = as.numeric(value_range_threshold * 1000)
+  # need to do this so that it's the same across all functions.
+  std_threshold = as.numeric(std_threshold * 1000)
 
   out = wear$raw_non_wear_functions$hees_2013_calculate_non_wear_time(
     data = accdata,
@@ -83,7 +80,7 @@ wt_hees_2013 =  function(
     min_non_wear_time_window = min_non_wear_time_window,
     window_overlap = window_overlap,
     std_min_num_axes = std_min_num_axes,
-    value_range_mg_threshold = value_range_mg_threshold,
+    value_range_mg_threshold = value_range_threshold,
     value_range_min_num_axes = value_range_min_num_axes,
     nwt_encoding = 0L,
     wt_encoding = 1L)
@@ -120,9 +117,9 @@ wt_hees_optimized = function(
     sample_rate = NULL,
     min_non_wear_time_window = 135L,
     window_overlap = 15L,
-    std_threshold = 7.0,
+    std_threshold = 0.007,
     std_min_num_axes = 1L,
-    value_range_mg_threshold = 1.0,
+    value_range_threshold = 0.001,
     value_range_min_num_axes = 1L,
     verbose = TRUE) {
     wt_hees_2013(
@@ -132,7 +129,7 @@ wt_hees_optimized = function(
       window_overlap = window_overlap,
       std_threshold = std_threshold,
       std_min_num_axes = std_min_num_axes,
-      value_range_mg_threshold = value_range_mg_threshold,
+      value_range_threshold = value_range_threshold,
       value_range_min_num_axes = value_range_min_num_axes,
       verbose = verbose)
   }

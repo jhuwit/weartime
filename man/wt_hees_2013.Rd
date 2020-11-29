@@ -11,9 +11,9 @@ wt_hees_2013(
   sample_rate = NULL,
   min_non_wear_time_window = 60L,
   window_overlap = 15L,
-  std_threshold = 3,
+  std_threshold = 0.003,
   std_min_num_axes = 2L,
-  value_range_mg_threshold = 50,
+  value_range_threshold = 0.05,
   value_range_min_num_axes = 2L,
   verbose = TRUE
 )
@@ -25,9 +25,9 @@ wt_hees_optimized(
   sample_rate = NULL,
   min_non_wear_time_window = 135L,
   window_overlap = 15L,
-  std_threshold = 7,
+  std_threshold = 0.007,
   std_min_num_axes = 1L,
-  value_range_mg_threshold = 1,
+  value_range_threshold = 0.001,
   value_range_min_num_axes = 1L,
   verbose = TRUE
 )
@@ -42,11 +42,11 @@ and then imputed}
 
 \item{window_overlap}{int (optional) basically the sliding window that progresses over the acceleration data. Defaults to 15 minutes.}
 
-\item{std_threshold}{float (optional) standard deviation threshold in mg. Acceleration axes values below or equal this threshold can be considered non-wear time. Defaults to 3.0mg. Note that within the code we convert mg to g.}
+\item{std_threshold}{float (optional) standard deviation threshold in g. Acceleration axes values below or equal this threshold can be considered non-wear time. Defaults to 3.0mg.}
 
 \item{std_min_num_axes}{int (optional)  minimum number of axes used to check if acceleration values are below the \code{std_threshold} value. Defaults to 2 axes; meaning that at least 2  axes need to have values below a threshold value to be considered non wear time}
 
-\item{value_range_mg_threshold}{float (optional) value range threshold value in mg. If the range of values within a window is below this threshold (meaning that there is very little change in acceleration over time) then this can be considered non wear time. Default to 50 mg. Note that within the code we convert mg to g}
+\item{value_range_threshold}{float (optional) value range threshold value in g. If the range of values within a window is below this threshold (meaning that there is very little change in acceleration over time) then this can be considered non wear time. Default to 50 mg.}
 
 \item{value_range_min_num_axes}{int (optional) minimum number of axes used to check if acceleration values range are below the value_range_mg_threshold value. Defaults to 2 axes; meaning that at least 2 axes need to have a value range below a threshold value to be considered non wear time}
 

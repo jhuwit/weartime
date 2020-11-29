@@ -37,10 +37,10 @@ starting or stop feature window (happens at t=0 or at the end of the data)}
 \item{start_stop_label_decision}{logical operator to see if both
 sides need to be classified as non-wear time (AND) or just a single side (OR)}
 
-\item{min_segment_length}{minimum length of the segment to be candidate for
+\item{min_segment_length}{minimum length of the segment (in minutes) to be candidate for
 non-wear time, coerced to integer}
 
-\item{sliding_window}{sliding window in minutes that will go over
+\item{sliding_window}{sliding window (in minutes) that will go over
 the acceleration data to find candidate non-wear segments, coerced to integer}
 
 \item{verbose}{print diagnostic messages}

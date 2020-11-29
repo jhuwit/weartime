@@ -2,7 +2,10 @@
 
 export(download_cnn_model)
 export(resample_acc)
+export(wt_baseline)
 export(wt_cnn)
 export(wt_hees_2011)
 export(wt_hees_2013)
 export(wt_hees_optimized)
+export(wt_vmu)
+export(wt_xyz)
