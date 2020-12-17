@@ -176,6 +176,8 @@ wt_cnn = function(
 #'
 #' @examples
 #'
+#' reticulate::py_config()
+#' weartime:::check_py_packages()
 #' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 #' package = "pygt3x")
 #' res = pygt3x::py_read_gt3x(path)
