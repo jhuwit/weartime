@@ -1,6 +1,6 @@
 #' 	Estimation of non-wear time periods based on Hees 2013 paper
 #'
-#' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
+#' @param accdata activity data, usually output from \code{\link{read.gt3x}},
 #' and then imputed
 #' @param sample_rate sample rate (integer) of the sampling frequency in Hertz from the header
 #' @param verbose print diagnostic messages
@@ -16,9 +16,10 @@
 #'
 #' @examples
 #' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "pygt3x")
-#' res = pygt3x::py_read_gt3x(path)
-#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' package = "weartime")
+#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                            imputeZeroes = TRUE,
+#'                            verbose = TRUE)
 #' out = wt_hees_2013(df)
 #'
 #' \dontrun{
@@ -30,8 +31,9 @@
 #' gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 #' path = gt3x_file
 #'
-#' res = pygt3x::py_read_gt3x(path)
-#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                            imputeZeroes = TRUE,
+#'                            verbose = TRUE)
 #' out = wt_hees_2013(df)
 #' df = resample_acc(df)
 #' out_100 = wt_hees_2013(df)

@@ -1,11 +1,13 @@
 testthat::context("Trying all available WT models")
 path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-                   package = "pygt3x")
-res = pygt3x::py_read_gt3x(path)
-df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+                   package = "weartime")
 
 
 testthat::test_that("Quick Sample rate test", {
+  testthat::skip_if_not_installed("read.gt3x")
+  df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                            imputeZeroes = TRUE,
+                            verbose = FALSE)
   x = df
   attr(x, "sample_rate") = NULL
   sr = weartime:::get_sample_rate(x)
@@ -26,6 +28,10 @@ testthat::test_that("Downloading the model", {
 })
 
 testthat::test_that("Trying the methods", {
+  testthat::skip_if_not_installed("read.gt3x")
+  df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                            imputeZeroes = TRUE,
+                            verbose = FALSE)
   methods = list(
     function(...) wt_cnn(..., outdir = tempdir()),
     wt_baseline,

@@ -24,7 +24,7 @@
 #'   episode can be considered true non-wear time. If tstart is at t = 0, or tend is at the end of the acceleration data—meaning that
 #'   those candidate non-wear episodes do not have a preceding or following window to extract features from—classify the start or stop
 #'   as non-wear time by default.
-#' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
+#' @param accdata activity data, usually output from [read.gt3x::read.gt3x()],
 #' and then imputed
 #' @param sample_rate sample rate (integer) of the sampling frequency in Hertz from the header
 #' @param verbose print diagnostic messages
@@ -49,9 +49,10 @@
 #' @examples
 #'
 #' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "pygt3x")
-#' res = pygt3x::py_read_gt3x(path)
-#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' package = "weartime")
+#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                            imputeZeroes = TRUE,
+#'                            verbose = TRUE)
 #' out = wt_cnn(df, outdir = tempdir())
 #'
 #' \dontrun{
@@ -63,8 +64,9 @@
 #' gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 #' path = gt3x_file
 #'
-#' res = pygt3x::py_read_gt3x(path)
-#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                            imputeZeroes = TRUE,
+#'                            verbose = TRUE)
 #' out = wt_cnn(df, outdir = tempdir())
 #'
 #' path = file.path(tempdir(), "AI12_NEO1F09120034_2017-09-25.gt3x.gz")
@@ -74,8 +76,9 @@
 #'     destfile = path,
 #'     quiet = FALSE)
 #' }
-#' res = pygt3x::py_read_gt3x(path)
-#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                            imputeZeroes = TRUE,
+#'                            verbose = TRUE)
 #' out = wt_cnn(df, outdir = tempdir())
 #' }
 #'
@@ -179,9 +182,10 @@ wt_cnn = function(
 #' reticulate::py_config()
 #' weartime:::check_py_packages()
 #' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "pygt3x")
-#' res = pygt3x::py_read_gt3x(path)
-#' df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+#' package = "weartime")
+#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                            imputeZeroes = TRUE,
+#'                            verbose = TRUE)
 #' res = resample_acc(df)
 resample_acc = function(
   accdata,

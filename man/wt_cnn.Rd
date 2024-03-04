@@ -19,7 +19,7 @@ wt_cnn(
 )
 }
 \arguments{
-\item{accdata}{activity data, usually output from \code{\link{py_read_gt3x}},
+\item{accdata}{activity data, usually output from \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}},
 and then imputed}
 
 \item{sample_rate}{sample rate (integer) of the sampling frequency in Hertz from the header}
@@ -83,9 +83,10 @@ as non-wear time by default.
 \examples{
 
 path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-package = "pygt3x")
-res = pygt3x::py_read_gt3x(path)
-df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+package = "weartime")
+df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                           imputeZeroes = TRUE,
+                           verbose = TRUE)
 out = wt_cnn(df, outdir = tempdir())
 
 \dontrun{
@@ -97,8 +98,9 @@ gt3x_file = unzip(destfile, exdir = tempdir())
 gt3x_file = gt3x_file[!grepl("__MACOSX", gt3x_file)]
 path = gt3x_file
 
-res = pygt3x::py_read_gt3x(path)
-df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                           imputeZeroes = TRUE,
+                           verbose = TRUE)
 out = wt_cnn(df, outdir = tempdir())
 
 path = file.path(tempdir(), "AI12_NEO1F09120034_2017-09-25.gt3x.gz")
@@ -108,8 +110,9 @@ if (!file.exists(path)) {
     destfile = path,
     quiet = FALSE)
 }
-res = pygt3x::py_read_gt3x(path)
-df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                           imputeZeroes = TRUE,
+                           verbose = TRUE)
 out = wt_cnn(df, outdir = tempdir())
 }
 

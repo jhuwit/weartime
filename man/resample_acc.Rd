@@ -27,8 +27,9 @@ Resample Accelerometer Data
 reticulate::py_config()
 weartime:::check_py_packages()
 path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-package = "pygt3x")
-res = pygt3x::py_read_gt3x(path)
-df = pygt3x::impute_zeros(res$data, res$dates, res$header)
+package = "weartime")
+df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                           imputeZeroes = TRUE,
+                           verbose = TRUE)
 res = resample_acc(df)
 }
