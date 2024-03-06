@@ -7,7 +7,7 @@
 \title{Standard Deviation Non-Wear}
 \usage{
 wt_baseline(
-  accdata,
+  df,
   sample_rate = NULL,
   std_threshold = 0.004,
   min_interval = 90L,
@@ -16,7 +16,7 @@ wt_baseline(
 )
 
 wt_xyz(
-  accdata,
+  df,
   sample_rate = NULL,
   std_threshold = 0.004,
   min_interval = 90L,
@@ -27,8 +27,8 @@ wt_xyz(
 wt_vmu(..., min_interval = 105L, use_vmu = TRUE)
 }
 \arguments{
-\item{accdata}{activity data, usually output from \code{\link{py_read_gt3x}},
-and then imputed}
+\item{df}{activity data, usually output from \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}},
+and then imputed, or a data.frame of time/X/Y/Z}
 
 \item{sample_rate}{sample rate (integer) of the sampling frequency in Hertz from the header}
 

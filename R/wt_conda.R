@@ -1,4 +1,4 @@
-#' Create Conda Environmment for `weartime`
+#' Create Conda Environment for `weartime`
 #'
 #' @param envname conda environment name for the modules to be installed
 #' @param ... additional arguments to pass to [reticulate::conda_create()]
@@ -21,7 +21,9 @@ conda_create_weartime = function(envname = "weartime", ...) {
   args$packages = NULL
   do.call(reticulate::conda_create, args = args)
   reticulate::py_install(packages = packages, pip = TRUE,
-                         envname = envname, ignore_installed = TRUE,
+                         envname = envname,
+                         method = "conda",
+                         ignore_installed = TRUE,
                          pip_ignore_installed = TRUE)
   invisible(NULL)
 }

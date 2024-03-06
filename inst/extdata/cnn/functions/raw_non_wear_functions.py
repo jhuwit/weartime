@@ -490,7 +490,9 @@ def cnn_nw_algorithm(raw_acc, hz, cnn_model_file, std_threshold = 0.004, distanc
 			start_episode = start_episode.reshape(1, start_episode.shape[0], start_episode.shape[1]) 
 			
 			# get binary class from model
-			start_label = cnn_model.predict_classes(start_episode).squeeze()
+			# start_label = cnn_model.predict_classes(start_episode).squeeze()
+			start_label = np.argmax(cnn_model.predict(start_episode), axis=-1)
+
 
 			# if the start label is 1, this means that it is wear time, and we set the first start_stop_label to 1
 			if start_label == 1:
@@ -511,7 +513,8 @@ def cnn_nw_algorithm(raw_acc, hz, cnn_model_file, std_threshold = 0.004, distanc
 			stop_episode = stop_episode.reshape(1, stop_episode.shape[0], stop_episode.shape[1]) 
 			
 			# get binary class from model
-			stop_label = cnn_model.predict_classes(stop_episode).squeeze()
+			# stop_label = cnn_model.predict_classes(stop_episode).squeeze()
+			stop_label = np.argmax(cnn_model.predict(stop_episode), axis=-1)
 
 			# if the start label is 1, this means that it is wear time, and we set the first start_stop_label to 1
 			if stop_label == 1:

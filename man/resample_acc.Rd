@@ -4,10 +4,10 @@
 \alias{resample_acc}
 \title{Resample Accelerometer Data}
 \usage{
-resample_acc(accdata, sample_rate = NULL, to_hz = 100L, verbose = TRUE)
+resample_acc(df, sample_rate = NULL, to_hz = 100L, verbose = TRUE)
 }
 \arguments{
-\item{accdata}{activity data, usually output from \code{\link{py_read_gt3x}},
+\item{df}{activity data, usually output from \code{\link{py_read_gt3x}},
 and then imputed}
 
 \item{sample_rate}{sample rate (integer) of the Hertz from the header}

@@ -7,7 +7,7 @@
 \title{Estimation of non-wear time periods based on Hees 2013 paper}
 \usage{
 wt_hees_2013(
-  accdata,
+  df,
   sample_rate = NULL,
   min_non_wear_time_window = 60L,
   window_overlap = 15L,
@@ -21,7 +21,7 @@ wt_hees_2013(
 wt_hees_2011(..., min_non_wear_time_window = 30L)
 
 wt_hees_optimized(
-  accdata,
+  df,
   sample_rate = NULL,
   min_non_wear_time_window = 135L,
   window_overlap = 15L,
@@ -33,8 +33,8 @@ wt_hees_optimized(
 )
 }
 \arguments{
-\item{accdata}{activity data, usually output from \code{\link{read.gt3x}},
-and then imputed}
+\item{df}{activity data, usually output from \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}},
+and then imputed, or a data.frame of time/X/Y/Z}
 
 \item{sample_rate}{sample rate (integer) of the sampling frequency in Hertz from the header}
 

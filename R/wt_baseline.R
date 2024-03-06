@@ -2,8 +2,8 @@
 #' @description Calculate non-wear time from raw acceleration data by finding intervals in which the acceleration standard deviation is below a std_threshold value
 
 #'
-#' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
-#' and then imputed
+#' @param df activity data, usually output from [read.gt3x::read.gt3x()],
+#' and then imputed, or a data.frame of time/X/Y/Z
 #' @param sample_rate sample rate (integer) of the sampling frequency in Hertz from the header
 #' @param verbose print diagnostic messages
 #' @param std_threshold standard deviation threshold in g
@@ -22,7 +22,7 @@
 #'                            imputeZeroes = TRUE,
 #'                            verbose = TRUE)
 #' out = wt_baseline(df)
-wt_baseline = function(accdata,
+wt_baseline = function(df,
                        sample_rate = NULL,
                        std_threshold = 0.004,
                        min_interval = 90L,
@@ -30,11 +30,12 @@ wt_baseline = function(accdata,
                        verbose = TRUE) {
   check_py_packages()
 
-  sample_rate = get_sample_rate(accdata, sample_rate, verbose)
-  times = accdata$time
-  accdata$time = NULL
-  accdata = as.matrix(accdata)
-  accdata = reticulate::np_array(accdata)
+  df = standardize_data(df)
+  sample_rate = get_sample_rate(df, sample_rate, verbose)
+  times = df$time
+  df$time = NULL
+  df = as.matrix(df)
+  df = reticulate::np_array(df)
 
   stopifnot(!is.null(sample_rate))
 
@@ -52,7 +53,7 @@ wt_baseline = function(accdata,
   sample_rate = as.integer(sample_rate)
 
   out = wear$raw_non_wear_functions$raw_baseline_calculate_non_wear_time(
-    raw_acc = accdata,
+    raw_acc = df,
     hz = sample_rate,
     std_threshold = std_threshold,
     min_interval = min_interval,
@@ -61,7 +62,7 @@ wt_baseline = function(accdata,
     wt_encoding = 1L)
 
   out = c(out)
-  stopifnot(length(out) == nrow(accdata))
+  stopifnot(length(out) == nrow(df))
 
   if (!is.null(times)) {
     out = tibble::tibble(time = times, wear = out > 0)

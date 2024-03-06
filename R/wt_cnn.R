@@ -24,8 +24,8 @@
 #'   episode can be considered true non-wear time. If tstart is at t = 0, or tend is at the end of the acceleration data—meaning that
 #'   those candidate non-wear episodes do not have a preceding or following window to extract features from—classify the start or stop
 #'   as non-wear time by default.
-#' @param accdata activity data, usually output from [read.gt3x::read.gt3x()],
-#' and then imputed
+#' @param df activity data, usually output from [read.gt3x::read.gt3x()],
+#' and then imputed, or a data.frame of time/X/Y/Z
 #' @param sample_rate sample rate (integer) of the sampling frequency in Hertz from the header
 #' @param verbose print diagnostic messages
 #' @param std_threshold standard deviation threshold in g
@@ -42,6 +42,8 @@
 #' non-wear time, coerced to integer
 #' @param sliding_window  sliding window (in minutes) that will go over
 #' the acceleration data to find candidate non-wear segments, coerced to integer
+#' @param model_path path to the model `h5` file, overrides `outdir` and
+#' must match corresponding `episode_window_sec`.
 #'
 #' @return A list of data
 #' @export
@@ -49,11 +51,12 @@
 #' @examples
 #'
 #' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "weartime")
+#'                    package = "weartime")
 #' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
 #'                            imputeZeroes = TRUE,
 #'                            verbose = TRUE)
-#' out = wt_cnn(df, outdir = tempdir())
+#' model_path = system.file("extdata", "cnn_v2_7.h5", package = "weartime")
+#' out = wt_cnn(df, outdir = tempdir(), model_path = model_path)
 #'
 #' \dontrun{
 #'
@@ -83,39 +86,45 @@
 #' }
 #'
 wt_cnn = function(
-  accdata,
-  sample_rate = NULL,
-  std_threshold = 0.004,
-  distance_in_min = 5L,
-  episode_window_sec = 7L,
-  edge = TRUE,
-  start_stop_label_decision = c("and", "or"),
-  min_segment_length = 1L,
-  sliding_window = 1L,
-  verbose = TRUE,
-  outdir = NULL
+    df,
+    sample_rate = NULL,
+    std_threshold = 0.004,
+    distance_in_min = 5L,
+    episode_window_sec = 7L,
+    edge = TRUE,
+    start_stop_label_decision = c("and", "or"),
+    min_segment_length = 1L,
+    sliding_window = 1L,
+    verbose = TRUE,
+    model_path = NULL,
+    outdir = NULL
 ) {
 
   check_py_packages()
 
-  sample_rate = get_sample_rate(accdata, sample_rate, verbose)
+  df = standardize_data(df, subset = TRUE)
+  sample_rate = get_sample_rate(df, sample_rate, verbose)
   stopifnot(!is.null(sample_rate))
-  times = accdata$time
-  accdata$time = NULL
+  times = df$time
+  df$time = NULL
   if (verbose) {
     message("Converting to Numpy Array")
   }
 
-  accdata = as.matrix(accdata)
-  accdata = reticulate::np_array(accdata)
+  df = as.matrix(df)
+  df = reticulate::np_array(df)
 
   start_stop_label_decision = match.arg(
     start_stop_label_decision)
 
-  cnn_model_file = download_cnn_model(
-    episode_window_sec = episode_window_sec,
-    outdir = outdir,
-    verbose = verbose > 1)
+  if (is.null(model_path)) {
+    cnn_model_file = download_cnn_model(
+      episode_window_sec = episode_window_sec,
+      outdir = outdir,
+      verbose = verbose > 1)
+  } else {
+    cnn_model_file = model_path
+  }
 
   import_path = system.file(
     "extdata", "cnn",
@@ -129,7 +138,7 @@ wt_cnn = function(
   }
 
   out = wear$raw_non_wear_functions$cnn_nw_algorithm(
-    raw_acc = accdata,
+    raw_acc = df,
     hz = as.integer(sample_rate),
     cnn_model_file = cnn_model_file,
     std_threshold = std_threshold,
@@ -150,9 +159,9 @@ wt_cnn = function(
 
   names(out) = c("nw_vector", "nw_data")
   stopifnot(ncol(out$nw_vector) ==1)
-  stopifnot(length(out$nw_vector) == nrow(accdata))
+  stopifnot(length(out$nw_vector) == nrow(df))
 
-  rm(accdata);
+  rm(df);
   out$nw_vector = c(out$nw_vector)
   if (!is.null(times)) {
     times_100 = seq(times[1],
@@ -168,7 +177,7 @@ wt_cnn = function(
 
 #' Resample Accelerometer Data
 #'
-#' @param accdata activity data, usually output from \code{\link{py_read_gt3x}},
+#' @param df activity data, usually output from \code{\link{py_read_gt3x}},
 #' and then imputed
 #' @param sample_rate sample rate (integer) of the Hertz from the header
 #' @param to_hz sample rate (integer) to resample to
@@ -188,31 +197,31 @@ wt_cnn = function(
 #'                            verbose = TRUE)
 #' res = resample_acc(df)
 resample_acc = function(
-  accdata,
-  sample_rate = NULL,
-  to_hz = 100L,
-  verbose = TRUE
+    df,
+    sample_rate = NULL,
+    to_hz = 100L,
+    verbose = TRUE
 ) {
 
   check_py_packages()
 
 
-  sample_rate = get_sample_rate(accdata = accdata, sample_rate, verbose)
+  sample_rate = get_sample_rate(df = df, sample_rate, verbose)
   stopifnot(!is.null(sample_rate))
   if (sample_rate == to_hz) {
     warning("Sample rate is identical to to_hz")
   }
 
 
-  at = attributes(accdata)
-  times = accdata$time
-  accdata$time = NULL
+  at = attributes(df)
+  times = df$time
+  df$time = NULL
   if (verbose) {
     message("Converting to Numpy Array")
   }
-  cn = colnames(accdata)
-  accdata = as.matrix(accdata)
-  accdata = reticulate::np_array(accdata)
+  cn = colnames(df)
+  df = as.matrix(df)
+  df = reticulate::np_array(df)
 
 
   import_path = system.file(
@@ -223,7 +232,7 @@ resample_acc = function(
     convert = TRUE)
 
   out = wear$signal_processing_functions$resample_acceleration(
-    data = accdata,
+    data = df,
     from_hz = as.integer(sample_rate),
     to_hz = as.integer(to_hz),
     verbose = verbose)
@@ -233,7 +242,7 @@ resample_acc = function(
   }
   colnames(out) = cn
   out = tibble::as_tibble(out)
-  rm(accdata)
+  rm(df)
 
   if (!is.null(times)) {
     times_100 = seq(times[1],

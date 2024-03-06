@@ -5,7 +5,7 @@
 \alias{use_weartime_condaenv}
 \alias{unset_reticulate_python}
 \alias{have_weartime_condaenv}
-\title{Create Conda Environmment for \code{weartime}}
+\title{Create Conda Environment for \code{weartime}}
 \usage{
 conda_create_weartime(envname = "weartime", ...)
 
@@ -24,5 +24,5 @@ have_weartime_condaenv(envname = "weartime")
 Nothing, called for side effects
 }
 \description{
-Create Conda Environmment for \code{weartime}
+Create Conda Environment for \code{weartime}
 }

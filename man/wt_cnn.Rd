@@ -5,7 +5,7 @@
 \title{Wear Time Estimation of Raw Data from a Convolutional Neural Network}
 \usage{
 wt_cnn(
-  accdata,
+  df,
   sample_rate = NULL,
   std_threshold = 0.004,
   distance_in_min = 5L,
@@ -15,12 +15,13 @@ wt_cnn(
   min_segment_length = 1L,
   sliding_window = 1L,
   verbose = TRUE,
+  model_path = NULL,
   outdir = NULL
 )
 }
 \arguments{
-\item{accdata}{activity data, usually output from \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}},
-and then imputed}
+\item{df}{activity data, usually output from \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}},
+and then imputed, or a data.frame of time/X/Y/Z}
 
 \item{sample_rate}{sample rate (integer) of the sampling frequency in Hertz from the header}
 
@@ -44,6 +45,9 @@ non-wear time, coerced to integer}
 the acceleration data to find candidate non-wear segments, coerced to integer}
 
 \item{verbose}{print diagnostic messages}
+
+\item{model_path}{path to the model \code{h5} file, overrides \code{outdir} and
+must match corresponding \code{episode_window_sec}.}
 
 \item{outdir}{output directory to download the CNN model, passed to
 \code{\link{download_cnn_model}}}
@@ -83,11 +87,12 @@ as non-wear time by default.
 \examples{
 
 path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-package = "weartime")
+                   package = "weartime")
 df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
                            imputeZeroes = TRUE,
                            verbose = TRUE)
-out = wt_cnn(df, outdir = tempdir())
+model_path = system.file("extdata", "cnn_v2_7.h5", package = "weartime")
+out = wt_cnn(df, outdir = tempdir(), model_path = model_path)
 
 \dontrun{
 

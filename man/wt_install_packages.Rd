@@ -5,7 +5,7 @@
 \title{Install Packages Needed for \code{weartime}}
 \usage{
 wt_install_packages(
-  packages = c("numpy", "pandas", "joblib", "psutil", "glob2", "tensorflow>=2.0.0",
+  packages = c("numpy", "pandas", "joblib", "psutil", "glob2", "tensorflow==2.0.0",
     "bitstring", "scipy", "resampy", "csv", "logging", "time", "datetime"),
   ...
 )
