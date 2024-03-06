@@ -15,13 +15,14 @@
 #' @export
 #'
 #' @examples
-#' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "weartime")
-#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-#'                            imputeZeroes = TRUE,
-#'                            verbose = TRUE)
-#' out = wt_hees_2013(df)
-#'
+#' if (isTRUE(wt_packages_installed())) {
+#'   path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+#'                      package = "weartime")
+#'   df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                             imputeZeroes = TRUE,
+#'                             verbose = TRUE)
+#'   out = wt_hees_2013(df)
+#' }
 #' \dontrun{
 #'
 #' url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X%2B.01.day.gt3x.zip"

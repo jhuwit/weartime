@@ -191,7 +191,6 @@ wt_cnn = function(
 #'
 #' reticulate::py_config()
 #' if (isTRUE(wt_packages_installed())) {
-#'   weartime:::check_py_packages()
 #'   path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
 #'                      package = "weartime")
 #'   df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
@@ -208,7 +207,7 @@ resample_acc = function(
 
   check_py_packages()
 
-
+  df = standardize_data(df)
   sample_rate = get_sample_rate(df = df, sample_rate, verbose)
   stopifnot(!is.null(sample_rate))
   if (sample_rate == to_hz) {

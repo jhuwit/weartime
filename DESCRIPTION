@@ -24,7 +24,8 @@ Imports:
     tibble,
     curl,
     dplyr,
-    magrittr
+    magrittr,
+    assertthat
 Suggests: 
     read.gt3x,
     testthat

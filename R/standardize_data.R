@@ -1,4 +1,5 @@
 standardize_data = function(data, subset = TRUE) {
+  sample_rate = attr(data, "sample_rate")
   HEADER_TIMESTAMP = TIME = HEADER_TIME_STAMP = X = Y = Z = NULL
   rm(list = c("HEADER_TIMESTAMP", "HEADER_TIME_STAMP", "X", "Y", "Z",
               "TIME"))
@@ -42,5 +43,7 @@ standardize_data = function(data, subset = TRUE) {
       dplyr::select(time = dplyr::any_of("HEADER_TIMESTAMP"), X, Y, Z)
   }
   stopifnot(all(c("X", "Y", "Z") %in% colnames(data)))
+  attr(data, "sample_rate") = sample_rate
+
   data
 }
