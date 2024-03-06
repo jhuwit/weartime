@@ -9,3 +9,6 @@
 ^\.github$
 ^inst/extdata/cnn/functions/__pycache__$
 ^extdata/cnn/functions/__pycache__$
+^__autograph_generated_file*$
+^\.DS_Store*$
+^\.DS_Store$

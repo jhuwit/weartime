@@ -1,2 +1,3 @@
 .Rproj.user
 inst/extdata/cnn/functions/__pycache__
+__autograph_generated_file*
