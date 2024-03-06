@@ -86,14 +86,15 @@ as non-wear time by default.
 }
 \examples{
 
-path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-                   package = "weartime")
-df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-                           imputeZeroes = TRUE,
-                           verbose = TRUE)
-model_path = system.file("extdata", "cnn_v2_7.h5", package = "weartime")
-out = wt_cnn(df, outdir = tempdir(), model_path = model_path)
-
+if (isTRUE(wt_packages_installed())) {
+  path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+                     package = "weartime")
+  df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                            imputeZeroes = TRUE,
+                            verbose = TRUE)
+  model_path = system.file("extdata", "cnn_v2_7.h5", package = "weartime")
+  out = wt_cnn(df, outdir = tempdir(), model_path = model_path)
+}
 \dontrun{
 
 url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X\%2B.01.day.gt3x.zip"

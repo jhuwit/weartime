@@ -7,8 +7,8 @@
 resample_acc(df, sample_rate = NULL, to_hz = 100L, verbose = TRUE)
 }
 \arguments{
-\item{df}{activity data, usually output from \code{\link{py_read_gt3x}},
-and then imputed}
+\item{df}{activity data, usually output from \code{\link[read.gt3x:read.gt3x]{read.gt3x::read.gt3x()}},
+and then imputed, or a data.frame of time/X/Y/Z}
 
 \item{sample_rate}{sample rate (integer) of the Hertz from the header}
 
@@ -25,11 +25,13 @@ Resample Accelerometer Data
 \examples{
 
 reticulate::py_config()
-weartime:::check_py_packages()
-path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-package = "weartime")
-df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-                           imputeZeroes = TRUE,
-                           verbose = TRUE)
-res = resample_acc(df)
+if (isTRUE(wt_packages_installed())) {
+  weartime:::check_py_packages()
+  path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+                     package = "weartime")
+  df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                            imputeZeroes = TRUE,
+                            verbose = TRUE)
+  res = resample_acc(df)
+}
 }

@@ -52,10 +52,12 @@ Calculate non-wear time from raw acceleration data by finding intervals in which
 See \url{https://doi.org/10.1101/2020.07.08.20148015}
 }
 \examples{
-path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-package = "weartime")
-df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-                           imputeZeroes = TRUE,
-                           verbose = TRUE)
-out = wt_baseline(df)
+if (isTRUE(wt_packages_installed())) {
+  path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+                     package = "weartime")
+  df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                            imputeZeroes = TRUE,
+                            verbose = TRUE)
+  out = wt_baseline(df)
+}
 }

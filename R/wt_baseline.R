@@ -16,12 +16,14 @@
 #' @export
 #'
 #' @examples
-#' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "weartime")
-#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-#'                            imputeZeroes = TRUE,
-#'                            verbose = TRUE)
-#' out = wt_baseline(df)
+#' if (isTRUE(wt_packages_installed())) {
+#'   path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+#'                      package = "weartime")
+#'   df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                             imputeZeroes = TRUE,
+#'                             verbose = TRUE)
+#'   out = wt_baseline(df)
+#' }
 wt_baseline = function(df,
                        sample_rate = NULL,
                        std_threshold = 0.004,
@@ -51,6 +53,9 @@ wt_baseline = function(df,
   min_interval = as.integer(min_interval)
   use_vmu = as.logical(use_vmu)
   sample_rate = as.integer(sample_rate)
+  assertthat::assert_that(
+    assertthat::is.count(sample_rate)
+  )
 
   out = wear$raw_non_wear_functions$raw_baseline_calculate_non_wear_time(
     raw_acc = df,

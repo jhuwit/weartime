@@ -64,3 +64,15 @@ check_py_packages = function(
   }
   return(all(res))
 }
+
+#' Python modules installed
+#'
+#' @return A logical
+#' @export
+#'
+#' @examples
+#' wt_packages_installed()
+wt_packages_installed = function() {
+  check_py_packages()
+}
+

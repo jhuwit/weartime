@@ -50,14 +50,15 @@
 #'
 #' @examples
 #'
-#' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#'                    package = "weartime")
-#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-#'                            imputeZeroes = TRUE,
-#'                            verbose = TRUE)
-#' model_path = system.file("extdata", "cnn_v2_7.h5", package = "weartime")
-#' out = wt_cnn(df, outdir = tempdir(), model_path = model_path)
-#'
+#' if (isTRUE(wt_packages_installed())) {
+#'   path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+#'                      package = "weartime")
+#'   df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                             imputeZeroes = TRUE,
+#'                             verbose = TRUE)
+#'   model_path = system.file("extdata", "cnn_v2_7.h5", package = "weartime")
+#'   out = wt_cnn(df, outdir = tempdir(), model_path = model_path)
+#' }
 #' \dontrun{
 #'
 #' url = "https://github.com/THLfi/read.gt3x/files/3522749/GT3X%2B.01.day.gt3x.zip"
@@ -177,8 +178,8 @@ wt_cnn = function(
 
 #' Resample Accelerometer Data
 #'
-#' @param df activity data, usually output from \code{\link{py_read_gt3x}},
-#' and then imputed
+#' @param df activity data, usually output from [read.gt3x::read.gt3x()],
+#' and then imputed, or a data.frame of time/X/Y/Z
 #' @param sample_rate sample rate (integer) of the Hertz from the header
 #' @param to_hz sample rate (integer) to resample to
 #' @param verbose print diagnostic messages
@@ -189,13 +190,15 @@ wt_cnn = function(
 #' @examples
 #'
 #' reticulate::py_config()
-#' weartime:::check_py_packages()
-#' path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
-#' package = "weartime")
-#' df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
-#'                            imputeZeroes = TRUE,
-#'                            verbose = TRUE)
-#' res = resample_acc(df)
+#' if (isTRUE(wt_packages_installed())) {
+#'   weartime:::check_py_packages()
+#'   path = system.file("extdata", "TAS1H30182785_2019-09-17.gt3x",
+#'                      package = "weartime")
+#'   df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+#'                             imputeZeroes = TRUE,
+#'                             verbose = TRUE)
+#'   res = resample_acc(df)
+#' }
 resample_acc = function(
     df,
     sample_rate = NULL,
