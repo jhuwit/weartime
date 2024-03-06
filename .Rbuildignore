@@ -8,3 +8,4 @@
 ^requirements\.txt$
 ^\.github$
 ^inst/extdata/cnn/functions/__pycache__$
+^extdata/cnn/functions/__pycache__$

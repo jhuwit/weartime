@@ -12,6 +12,9 @@ testthat::test_that("Run CNN on TAS", {
 
 testthat::test_that("Resample TAS", {
   testthat::skip_if_not_installed("read.gt3x")
+  df = read.gt3x::read.gt3x(path, asDataFrame = TRUE,
+                            imputeZeroes = TRUE,
+                            verbose = FALSE)
   out = resample_acc(df)
   testthat::expect_true(nrow(out) == 240500)
 })
