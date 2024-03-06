@@ -14,3 +14,5 @@
 ^\.DS_Store$
 ^extdata/cnn/__autograph_generated_file*$
 ^__py_cache__$
+.*__pycache__.*
+.*__autograph_generated_file.*
