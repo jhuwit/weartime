@@ -12,3 +12,5 @@
 ^__autograph_generated_file*$
 ^\.DS_Store*$
 ^\.DS_Store$
+^extdata/cnn/__autograph_generated_file*$
+^__py_cache__$
