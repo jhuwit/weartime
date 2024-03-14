@@ -14,6 +14,7 @@ conda_create_weartime = function(envname = "weartime", ...) {
                "psutil",
                "glob2",
                "tensorflow>=2.0.0",
+               "tensorflow<=2.15.0",
                "bitstring",
                "scipy",
                "resampy")
