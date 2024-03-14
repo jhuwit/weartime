@@ -50,9 +50,9 @@ jobs:
           Rscript -e "reticulate::install_miniconda()"
       - if: runner.os == 'macOS'
         run: echo "options(reticulate.conda_binary = reticulate:::miniconda_conda())" >> .Rprofile
-      - name: Install TensorFlow
+      - name: Install Weartime Conda
         run: |
-          Rscript -e "reticulate::conda_create('r-reticulate', packages = c("numpy", "pandas", "joblib", "psutil", "glob2", "tensorflow",  "bitstring", "scipy", "resampy", "csv", "logging", "time", "datetime"))
+          Rscript -e "source('R/wt_conda.R'); conda_create_weartime()"
 
       - uses: r-lib/actions/check-r-package@v2
         with:
