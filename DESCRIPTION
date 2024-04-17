@@ -1,6 +1,6 @@
 Package: weartime
 Title: Wear Time Estimation from Accelerometer Data
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: c(
     person(given = "John",
            family = "Muschelli",
