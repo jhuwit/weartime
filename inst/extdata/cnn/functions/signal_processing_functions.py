@@ -110,8 +110,8 @@ def resample_acceleration(data, from_hz, to_hz, use_parallel = False, num_jobs =
 	# calculate number of new samples required when data is resampled
 	# num_samples = int(num_seconds * to_hz)
 	
-  # from https://github.com/bmcfee/resampy/blob/main/resampy/core.py#L114
-  num_samples = int(len(data) * float(to_hz) / float(from_hz))
+	# from https://github.com/bmcfee/resampy/blob/main/resampy/core.py#L114
+	num_samples = int(len(data) * float(to_hz) / float(from_hz))
 
 	# get number of axes in the data. These are the columns of the array (so if we have xyz then this is 3)
 	axes = data.shape[1]
