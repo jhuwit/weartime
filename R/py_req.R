@@ -41,13 +41,13 @@ check_py_packages = function(
 ) {
   n = names(packages)
   names(packages)[n == ""] = packages[n == ""]
-  try({
-    suppressWarnings(
-      suppressMessages(
-        reticulate::py_module_available(packages[1])
-      )
-    )
-  }, silent = TRUE)
+  # try({
+  #   suppressWarnings(
+  #     suppressMessages(
+  #       reticulate::py_module_available(packages[1])
+  #     )
+  #   )
+  # }, silent = TRUE)
   py_avail = reticulate::py_available(initialize = FALSE)
   if (!py_avail) {
     warning("reticulate::py_available indicated python not available, ",
